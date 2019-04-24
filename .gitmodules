@@ -1,0 +1,6 @@
+[submodule "linux_tip"]
+	path = linux_tip
+	url = ./linux_tip
+[submodule "RISCV"]
+	path = RISCV
+	url = ./RISCV

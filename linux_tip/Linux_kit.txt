@@ -1,0 +1,184 @@
+Command help for Linux:
+  man command   exp: man fdisk
+Disk and partition:
+
+fdisk -l   List all the hardware storage
+df -k      List all the mounted stroage
+mkfs.* /dev/sda1     Make the file system for sda1
+blkid      Check the harddisk information, like: uuid filesystem
+/etc/fstab  Change the auto-mount point when system power up
+
+/etc/fstab for this disk:
+            UUID="da367815-e4d1-4f7b-a976-44ffb8e861fe" /eda    xfs     defaults 0 0
+
+User and group:
+  groupadd   add a new group, and define a group ID
+  groupadd -g 1000 cad
+  useradd    add a new user
+  userdel    Delete a user 
+  groupdel   Delete a group
+  usermod    Modify an account
+  groupmod   Modify a  group
+  newgrp     Modify a user to another group
+  pwck       Check configure file /etc/passwd and /etc/shadow
+
+file for user and group
+  /etc/group Configure file for group
+  /etc/gshadow shadown file for group
+  
+  /etc/passwd Configure file for user
+  /etc/shadow  shadown passwd
+  /etc/skel    Configure the user enviroments
+  /etc/login.defs  Rule file when create user
+  /etc/default/useradd Rule file  for enviroments when create user
+
+File attribute:
+  chown -R user:group file/dir change the user and owner for file or dir
+  chmod                        change the r/w/e for file
+ 
+
+Yum change from RHEL to CentOS
+   1. Uninstall yum pacakge from RHEL
+   rpm -qa | grep yum   #List all the yum install package in RHEL
+   rpm -qa | grep yum|xargs rpm -e --nodeps #Uninstall all the yum package
+   rpm -qa | grep yum   #Check yum again
+   2. Download yum from CentOS
+   yum-metadata-parser-xxxxxxxxx.rpm
+   yum-3.4.3-150.el7.centos.noarch.rpm
+   yum-plugin-fastestmirror-xxxx.el7.noarch.rpm
+   yum-utils-xxxxxx.el7.noarch.rpm
+   python-urlgrabber-3.1-xxx.el7.noarch.rpm
+   rpm -qa |grep python-urlgrabber |xargs rpm -e --nodeps
+   3. yum install
+   rpm -ivh python-xxxxx.rpm
+   rpm -ivh yum-metadata-parser-xxxxxxxxx
+   rpm -ivh yum-3.4.3-150.el7.centos.noarch.rpm yum-plugin-fastestmirror-xxxx.el7.noarch.rpm
+   4. Change the repo
+   4.1 Backup all the old repo
+   4.2 Download the new repo
+   4.3 CentOS-Media.repo
+       enable=0
+   4.4 Change version number in CentOS-Base.repo from $releasever to 7
+   4.5 Check
+       yum clean all
+	   yum makecache
+	   yum update
+
+Eda relationship:
+    yum install ksh
+
+    yum -y install gcc
+    yum -y install gcc+ gcc-c++ #vcs gcc g++ command not found
+    yum -y install libtermcap.so.2
+
+Change hostname in CentOS6:
+    1. Add your hostname: work-eda to /etc/hosts, add the following line:
+      127.0.0.1 work-eda
+    2. Change hostname to work-eda in /etc/sysconfig/network:
+       HOSTNAME=work-eda
+
+Cadence error:
+   cd $CDS_ROOT/tools.lnx86/bin
+   #check the system for IC617
+   ./checkSysConf IC6.1.7
+   # If something wrong, yum install something.
+   # If  Error: 
+   #    Can't determine host name. Locking is not allowed with host name
+   #    'localhost'
+   # Glibc version is invalid, soluation, get new glibc or
+   # Change hostname from localhost to other, Exp: Change to cadmgr
+   su root
+   hostname cadmgr
+   exit
+
+
+About hostid
+   $ hostid
+    00000000
+   #hostid is 00000000 because your hostname is not in /etc/hosts
+   $ hostname
+    work-eda
+   #If hostname is work-eda, add the following line in /etc/hosts
+    127.0.0.1 work-eda
+   $ hostid
+    007f0100
+     
+git:
+   1. error: RPC failed
+      http.postBuffer is too small
+     git config -- global http.postBuffer 4096000000
+     git submodule update --recursive --no-fetch  #success from git/gcc-riscv
+
+git and github(RHEL6.5):
+   Step 1: install git
+      yum install git
+   Step 2: Configure user information:
+      git config --global user.name "yourname"   
+      git config --global user.email "youremail"   
+   Step 3: Install SSH
+      yum install ssh
+      service sshd start
+      chkconfig ssh on
+   Step 4: Generate ssh ken
+      ssh-kengen -t rsa -C "youremail"
+      ssh-agent -s
+      ssh-add ~/.ssh/id_rsa.pub
+   Step 5: Copy id_rsa.pub to github
+       in github.com web: Settings --> SSH and GPG keys
+       New SSH key  --> Contents of id_rsa.pub
+      
+   Step 6: Verify your Key
+       ssh -T git@github.com
+     
+
+git tips:
+   git remote add origin git@github.com:.....
+      fatal: remote origin already exists
+   git remote rm origin
+   git remote add origin git@github.com:.....
+   git commit -m "add something"
+   git push -u orign master
+
+git submodule:
+   git submodule add <submodule_path> submodulename
+   git status
+   git diff
+   git add .
+   git commit -m "asdf"
+   git push origin master
+
+github
+  The first repository in github:
+  You must create one repository in github.com.
+  Exp: repository's name is 'test' 
+  Then in your linux:
+
+  git clone --recursive git@github.com:your_github_account/test
+  
+
+  Create another repository named: tb in local and then synchronous to github:
+  
+  cd test
+  mkdir tb
+  cd tb
+  git init
+  echo "test ...." >aa
+  cd ..
+
+  git submodule add ./tb tb
+  git add .
+  git commit -m "add submodule tb"
+  git remote rm origin
+  git remote add origin git@github.com:your_github_account/test
+  git push origin master
+
+
+ You can find tb in test/ after referesh your github.com/your_github_account/test
+  
+ If folder in github is gray and can not access:
+   git rm -r --cached folder
+   git add folder
+   git commit -m "adf"
+   git remote rm origin
+   git remote add origin git@github.com:your_github_account/test
+   git push origin master
