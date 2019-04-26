@@ -8,7 +8,12 @@ module alu(
 			);
 			
 
-assign res_slt = (op_a < op_b);
+assign res_slt = (op_a <  op_b);
+assign res_sge = ~res_slt;
+assign res_sgt = (op_a >  op_b);
+assign res_sle = ~res_sqt;
+assign res_eq  = (op_a == op_b);
+assign res_ne  = ~res_eq;
 assign res_or  = op_a  |  op_b;
 assign res_and = op_a  &  op_b;
 assign res_add = op_a  +  op_b;
