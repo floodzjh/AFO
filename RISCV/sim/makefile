@@ -1,4 +1,3 @@
-#Support vcs/ncverilog(irun)
 
 p_dir    := ./..
 c_dir    := ${p_dir}/code
