@@ -1,0 +1,9 @@
+git add .
+wait
+git remote rm origin
+wait
+git remote add origin git@github.com:floodzjh/AFO
+wait
+git commit -m "clean"
+wait
+git push origin master
